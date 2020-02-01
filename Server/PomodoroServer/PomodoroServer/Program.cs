@@ -18,7 +18,7 @@ namespace PomodoroServer {
     public class Program {
         
         public static readonly FirestoreDb db = GenerateFireStore("swamphacks2020bett", "Swamphacks2020-d25d3a408a1e.json");
-        private static string client_id, client_secret;
+        public static string client_id, client_secret;
         
         
         public static void Main(string[] args) {
@@ -43,45 +43,8 @@ namespace PomodoroServer {
             return builder.Build();
         }
 
-        public static async Task<Dictionary<string, string>> GenerateTokensFromCode(string authcode) {
-            
-            var values = new Dictionary<string, string> {
-                {"grant_type", "authorization_code"},
-                {"code", authcode},
-                {"redirect_uri", "https://localhost:8888/redirect"}
-            };
 
 
-
-            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(client_id + ':' + client_secret);
-            var base64String = System.Convert.ToBase64String(plainTextBytes);
-
-
-            HttpClient client = new HttpClient();
-
-            client.DefaultRequestHeaders.Add("Authorization", "Basic " + base64String);
-
-            var content = new FormUrlEncodedContent(values);
-
-            var response = await client.PostAsync("https://accounts.spotify.com/api/token", content);
-
-            var responseString = await response.Content.ReadAsStringAsync();
-
-            //Console.WriteLine(responseString);
-            
-            JToken jsonResult = JToken.Parse(responseString);
-
-            string accessToken = (string)jsonResult["access_token"];
-            int expiresIn = (int)jsonResult["expires_in"];
-            string refreshToken = (string)jsonResult["refresh_token"];
-
-            return new Dictionary<string, string> {
-                {"accesstoken", accessToken},
-                {"expiresin", expiresIn.ToString()},
-                {"refreshtoken", refreshToken}
-            };
-        }
-        
     }
     
     
