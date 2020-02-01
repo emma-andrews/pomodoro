@@ -17,27 +17,81 @@ namespace PomodoroServer.Controllers {
         
         
         [HttpPost]
-        public async Task<string> CreateUser(UserProfile newUser) {
+        public async Task<Dictionary<string, string>> CreateUser(UserProfile newUser) {
 
+            Console.WriteLine(newUser.ToString());
             
             //step 1: fill out userprofile
             //it will come with username, email, password, access token
-            var dictionary = await SpotifyHandler.GenerateTokensFromCode(newUser.Authcode);
-            newUser.Accesstoken = dictionary["accesstoken"];
-            newUser.Refreshtoken = dictionary["refreshtoken"];
+            //var dictionary = await SpotifyHandler.GenerateTokensFromCode(newUser.Authcode);
+            // newUser.Accesstoken = dictionary["accesstoken"];
+            // newUser.Refreshtoken = dictionary["refreshtoken"];
 
-            var secondsFromNow = Int32.Parse(dictionary["expiresin"]);
-            newUser.Atexpiretime = DateTime.Now.AddSeconds(secondsFromNow);
-            
-            
-            
+            //var secondsFromNow = Int32.Parse(dictionary["expiresin"]);
+            //newUser.Atexpiretime = DateTime.Now.AddSeconds(newUser.);
+
             //step 2: after filling UP, put in database
             var userCollection = Program.db.Collection("users");
             await userCollection.Document().SetAsync(newUser.convertToDictionary());
             var matchingUserDocs = await Program.db.Collection("users").WhereEqualTo("email", newUser.Email).GetSnapshotAsync();
 
-            return matchingUserDocs[0].Id;
+            return new Dictionary<string, string> {{"id", matchingUserDocs[0].Id}};
         }
+
+        // [HttpPut]
+        // public async Task<string> UpdateUser(UserProfile updatedUser, string id) {
+        //     var userCollection = Program.db.Collection("users");
+        //     var docRef = userCollection.Document(id);
+        //     docRef.UpdateAsync(updatedUser.convertToDictionary());
+        //     //docRef.SetAsync(updatedUser.convertToDictionary());
+        //     //await userCollection.Document().SetAsync(updatedUser.convertToDictionary());
+        //
+        //     return "good";
+        // }
+        //
+
+
+        [HttpPut("updatespotify")]
+        public async Task<string> UpdateUserSpotify(UserProfile updatedUser, string id) {
+                 var userCollection = Program.db.Collection("users");
+                 var docRef = userCollection.Document(id);
+                 var user = new UserProfile(docRef.GetSnapshotAsync().Result.ToDictionary());
+
+                 user.Accesstoken = updatedUser.Accesstoken;
+                 user.Refreshtoken = updatedUser.Refreshtoken;
+                 user.Atexpiretime = updatedUser.Atexpiretime;
+                 
+                 return "ok";
+        }
+
+        [HttpPut("updatesettings")]
+        public async Task<string> UpdateUserSettings(UserProfile updatedUser, string id) {
+            var userCollection = Program.db.Collection("users");
+            var docRef = userCollection.Document(id);
+            var user = new UserProfile(docRef.GetSnapshotAsync().Result.ToDictionary());
+
+            user.Breaklength = updatedUser.Breaklength;
+            user.Intervallength = updatedUser.Intervallength;
+            user.Sessionlength = updatedUser.Sessionlength;
+                 
+            return "ok";
+        }
+
+        [HttpGet("verify")]
+        public async Task<Dictionary<string, string>> VerifyUser(string email) {
+            
+            var matchingUserDocs = await Program.db.Collection("users").WhereEqualTo("email", email).GetSnapshotAsync();
+            var listOfDocs = matchingUserDocs.Documents.ToList();
+            if (listOfDocs.Count > 1) {
+                return new Dictionary<string, string> {
+                    {"verified", "true"},
+                    {"id", listOfDocs[0].Id}
+                };
+            }
+            return new Dictionary<string, string>{{"verified", "false"}};
+        }
+        
+        
 
         [HttpGet("refresh")]
         public async Task RefreshUser(string id) {
@@ -51,9 +105,23 @@ namespace PomodoroServer.Controllers {
         }
         
         [HttpGet("play")]
-        public void PlayUser(string id) {
-            SpotifyHandler.PlayMusic(id);
+        public async Task PlayUser(string id) {
+            await SpotifyHandler.PlayMusic(id);
         }
+        
+        [HttpGet]
+        public async Task<Dictionary<string, object>> GetUser(string id) {
+            try {
+                var matchingUserDocs = await Program.db.Collection("users").Document(id).GetSnapshotAsync();
+                return new UserProfile(matchingUserDocs.ToDictionary()).convertToDictionary();
+            }
+            catch (Exception e) {
+                return null;
+            }
+        }
+        
+        
+        
         
     }
 }

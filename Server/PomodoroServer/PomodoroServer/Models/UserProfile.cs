@@ -48,14 +48,16 @@ namespace PomodoroServer {
             get => breaklength;
             set => breaklength = value;
         }
-        public string Authcode {
-            get => authcode;
-            set => authcode = value;
-        }
+
         
-        private string email, username, password, accesstoken, refreshtoken, authcode;
+        private string email, username, password, accesstoken, refreshtoken;
 
+        private bool loggedin;
 
+        public bool Loggedin {
+            get => loggedin;
+            set => loggedin = value;
+        }
 
         private DateTime atexpiretime;
         private int sessionlength, intervallength, breaklength;
@@ -64,15 +66,16 @@ namespace PomodoroServer {
 
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
             
+            dictionary.Add("username", username);
             dictionary.Add("email", email);
             dictionary.Add("password", password);
-            dictionary.Add("authcode", authcode);
             atexpiretime = DateTime.SpecifyKind(atexpiretime, DateTimeKind.Utc);
             dictionary.Add("atexpiretime", atexpiretime);
             dictionary.Add("sessionlength", sessionlength);
             dictionary.Add("intervallength", intervallength);
             dictionary.Add("breaklength", breaklength);
-            
+            dictionary.Add("accesstoken", accesstoken);
+            dictionary.Add("refreshtoken", refreshtoken);
             
             return dictionary;
         }
@@ -81,13 +84,17 @@ namespace PomodoroServer {
         public UserProfile(Dictionary<string, object> values) {
 
             email = (string) values["email"];
+            username = (string) values["username"];
             Timestamp timestamp = (Timestamp) values["atexpiretime"];
             atexpiretime = timestamp.ToDateTime();
             password = (string) values["password"];
-            sessionlength = (int) values["sessionlength"];
-            intervallength = (int) values["intervallength"];
-            breaklength = (int) values["breaklength"];
-            authcode = (string) values["authcode"];
+            Object temp = values["sessionlength"];
+            Console.WriteLine((Int64) temp);
+            sessionlength = Int32.Parse(values["sessionlength"].ToString());
+            intervallength = Int32.Parse(values["intervallength"].ToString());
+            breaklength = Int32.Parse(values["breaklength"].ToString());
+            accesstoken = (string)values["accesstoken"];
+            refreshtoken = (string)values["refreshtoken"];
 
         }
         
