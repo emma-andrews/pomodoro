@@ -4,11 +4,6 @@ using Google.Cloud.Firestore;
 
 namespace PomodoroServer {
     public class UserProfile {
-        public string Id {
-            get => id;
-            set => id = value;
-        }
-
         public string Email {
             get => email;
             set => email = value;
@@ -57,8 +52,6 @@ namespace PomodoroServer {
             get => authcode;
             set => authcode = value;
         }
-
-        private string id;
         
         private string email, username, password, accesstoken, refreshtoken, authcode;
 
@@ -71,7 +64,6 @@ namespace PomodoroServer {
 
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
             
-            dictionary.Add("id", id);
             dictionary.Add("email", email);
             dictionary.Add("password", password);
             dictionary.Add("authcode", authcode);
@@ -88,7 +80,6 @@ namespace PomodoroServer {
         public UserProfile(){}
         public UserProfile(Dictionary<string, object> values) {
 
-            id = (string)values["id"];
             email = (string) values["email"];
             Timestamp timestamp = (Timestamp) values["atexpiretime"];
             atexpiretime = timestamp.ToDateTime();
