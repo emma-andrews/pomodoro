@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
+import './custom.scss';
 // import axios from 'axios';
 
 import NavBar from './components/NavBar';
