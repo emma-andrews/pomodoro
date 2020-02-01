@@ -1,5 +1,5 @@
 
-Pomodoro App [PLACEHOLDER TITLE]
+# Pomodoro App [PLACEHOLDER TITLE]
 
 ## Stay focused while studying!
 
