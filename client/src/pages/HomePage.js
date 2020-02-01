@@ -5,7 +5,7 @@ const HomePage = (props) => {
   return (
     <>
       <h1>Welcome!</h1>
-      <Button variant="info">Start</Button>
+      <Button href='/internal/spotify_auth'>Start</Button>
     </>
   );
 };
