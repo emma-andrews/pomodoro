@@ -52,9 +52,60 @@ namespace PomodoroServer.Handlers {
             UserProfile temp = new UserProfile(dictionary);
             
             
+            var values = new Dictionary<string, string> {
+                {"grant_type", "refresh_token"},
+                {"refresh_token", temp.Refreshtoken}
+            };
+
+
+
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(Program.client_id + ':' + Program.client_secret);
+            var base64String = System.Convert.ToBase64String(plainTextBytes);
+
+
+            HttpClient client = new HttpClient();
+
+            client.DefaultRequestHeaders.Add("Authorization", "Basic " + base64String);
+
+            var content = new FormUrlEncodedContent(values);
+
+            var response = await client.PostAsync("https://accounts.spotify.com/api/token", content);
+
+            var responseString = await response.Content.ReadAsStringAsync();
+            JToken jsonResult = JToken.Parse(responseString);
             
+            //ensure this works
 
 
+        }
+
+
+        public static async Task PlayMusic(string id) {
+            //check for playerstate beforehand??
+            
+            
+            var dictionary = Program.db.Collection("users").Document(id).GetSnapshotAsync().Result.ToDictionary();
+            UserProfile temp = new UserProfile(dictionary);
+            
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + temp.Accesstoken);
+            var response = await client.PutAsync("https://api.spotify.com/v1/me/player/play", null);
+            //null for body?
+            var responseString = await response.Content.ReadAsStringAsync();
+            
+            
+            
+        }
+
+        public static async Task PauseMusic(string id) {
+            var dictionary = Program.db.Collection("users").Document(id).GetSnapshotAsync().Result.ToDictionary();
+            UserProfile temp = new UserProfile(dictionary);
+            
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + temp.Accesstoken);
+            var response = await client.PutAsync("https://api.spotify.com/v1/me/player/pause", null);
+            //null for body?
+            var responseString = await response.Content.ReadAsStringAsync();
         }
         
         

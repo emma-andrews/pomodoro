@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Google.Cloud.Firestore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -37,5 +38,22 @@ namespace PomodoroServer.Controllers {
 
             return matchingUserDocs[0].Id;
         }
+
+        [HttpGet("refresh")]
+        public async Task RefreshUser(string id) {
+            //SpotifyHandler.RefreshUser(id);
+            //Do I need an await here
+        }
+
+        [HttpGet("pause")]
+        public void PauseUser(string id) {
+            SpotifyHandler.PauseMusic(id);
+        }
+        
+        [HttpGet("play")]
+        public void PlayUser(string id) {
+            SpotifyHandler.PlayMusic(id);
+        }
+        
     }
 }

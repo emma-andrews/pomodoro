@@ -17,7 +17,7 @@ using Newtonsoft.Json.Linq;
 namespace PomodoroServer {
     public class Program {
         
-        public static readonly FirestoreDb db = GenerateFireStore("swamphacks2020bett", "Swamphacks2020-d25d3a408a1e.json");
+        public static readonly FirestoreDb db = GenerateFireStore("swamphacks2020bett", "Keys/Swamphacks2020-d25d3a408a1e.json");
         public static string client_id, client_secret;
         
         
