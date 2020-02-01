@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PomodoroServer.Handlers;
 
 namespace PomodoroServer.Controllers {
     [ApiController]
@@ -20,7 +21,7 @@ namespace PomodoroServer.Controllers {
             
             //step 1: fill out userprofile
             //it will come with username, email, password, access token
-            var dictionary = await Program.GenerateTokensFromCode(newUser.Authcode);
+            var dictionary = await SpotifyHandler.GenerateTokensFromCode(newUser.Authcode);
             newUser.Accesstoken = dictionary["accesstoken"];
             newUser.Refreshtoken = dictionary["refreshtoken"];
 
