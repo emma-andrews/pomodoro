@@ -13,6 +13,7 @@
           <e p="UsersController.cs" t="Include" />
         </e>
         <e p="Keys" t="Include">
+          <e p="clientsecrets.txt" t="Include" />
           <e p="Swamphacks2020-d25d3a408a1e.json" t="Include" />
         </e>
         <e p="Models" t="Include">

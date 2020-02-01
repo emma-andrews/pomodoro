@@ -20,8 +20,9 @@ namespace PomodoroServer.Controllers {
             
             //step 1: fill out userprofile
             //it will come with username, email, password, access token
-            
-            
+            var dictionary = await Program.GenerateTokensFromCode(newUser.Authcode);
+            newUser.Accesstoken = dictionary["accesstoken"];
+            newUser.Refreshtoken = dictionary["refreshtoken"];
             
             //step 2: after filling UP, put in database
             var userCollection = Program.db.Collection("users");
