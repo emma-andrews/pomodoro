@@ -83,18 +83,26 @@ namespace PomodoroServer {
         public UserProfile(){}
         public UserProfile(Dictionary<string, object> values) {
 
-            email = (string) values["email"];
-            username = (string) values["username"];
-            Timestamp timestamp = (Timestamp) values["atexpiretime"];
-            atexpiretime = timestamp.ToDateTime();
-            password = (string) values["password"];
-            Object temp = values["sessionlength"];
-            Console.WriteLine((Int64) temp);
-            sessionlength = Int32.Parse(values["sessionlength"].ToString());
-            intervallength = Int32.Parse(values["intervallength"].ToString());
-            breaklength = Int32.Parse(values["breaklength"].ToString());
-            accesstoken = (string)values["accesstoken"];
-            refreshtoken = (string)values["refreshtoken"];
+            if(values.ContainsKey("email"))
+                email = (string)values["email"];
+            if(values.ContainsKey("username"))
+                username = (string) values["username"];
+            if (values.ContainsKey("atexpiretime")) {
+                Timestamp timestamp = (Timestamp) values["atexpiretime"];
+                atexpiretime = timestamp.ToDateTime();
+            }
+            if(values.ContainsKey("password"))
+                password = (string) values["password"];
+            if(values.ContainsKey("sessionlength"))
+                sessionlength = Int32.Parse(values["sessionlength"].ToString());
+            if(values.ContainsKey("intervallength"))
+                intervallength = Int32.Parse(values["intervallength"].ToString());
+            if(values.ContainsKey("breaklength"))
+                breaklength = Int32.Parse(values["breaklength"].ToString());
+            if(values.ContainsKey("accesstoken"))
+                accesstoken = (string)values["accesstoken"];
+            if(values.ContainsKey("refreshtoken"))
+                refreshtoken = (string)values["refreshtoken"];
 
         }
         

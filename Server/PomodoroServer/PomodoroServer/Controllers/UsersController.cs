@@ -78,24 +78,26 @@ namespace PomodoroServer.Controllers {
         }
 
         [HttpGet("verify")]
-        public async Task<Dictionary<string, string>> VerifyUser(string email) {
+        public async Task<Dictionary<string, string>> VerifyUser(string email, string password) {
             
-            var matchingUserDocs = await Program.db.Collection("users").WhereEqualTo("email", email).GetSnapshotAsync();
-            var listOfDocs = matchingUserDocs.Documents.ToList();
-            if (listOfDocs.Count > 1) {
-                return new Dictionary<string, string> {
-                    {"verified", "true"},
-                    {"id", listOfDocs[0].Id}
-                };
+            var matchingUserDocs = await Program.db.Collection("users").WhereEqualTo("email", email)
+                .WhereEqualTo("password", password).GetSnapshotAsync();
+
+            
+            if (matchingUserDocs.Count != 1) {
+                return null;
             }
-            return new Dictionary<string, string>{{"verified", "false"}};
+
+            var documentSnapshot = matchingUserDocs[0];
+            return new Dictionary<string, string> {{"id", matchingUserDocs[0].Id}};
+
         }
         
         
 
         [HttpGet("refresh")]
         public async Task RefreshUser(string id) {
-            //SpotifyHandler.RefreshUser(id);
+            SpotifyHandler.RefreshUser(id);
             //Do I need an await here
         }
 

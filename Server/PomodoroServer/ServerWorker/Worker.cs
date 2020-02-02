@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Cloud.Firestore;
@@ -20,12 +21,12 @@ namespace ServerWorker {
         protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
             while (!stoppingToken.IsCancellationRequested) {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await Task.Delay(60000, stoppingToken);
+                await Task.Delay(30000, stoppingToken);
                 
                 //How often do I poll the users?
                 //every minute?
 
-                RefreshUsers();
+                await RefreshUsers();
                 
 
 
@@ -47,7 +48,7 @@ namespace ServerWorker {
             foreach (var userRef in list) {
                 var user = userRef.GetSnapshotAsync().Result.ToDictionary();
                 Timestamp timestamp = (Timestamp) user["atexpiretime"];
-                var dateTime = timestamp.ToDateTime();
+                var dateTime = timestamp.ToDateTime().ToLocalTime();
                 var userID = userRef.Id;
                 userDictionary.Add(userID, dateTime);
             }
@@ -60,11 +61,18 @@ namespace ServerWorker {
 
         protected async Task RefreshOldies(Queue<KeyValuePair<string, DateTime>> queue) {
 
-            int compareValue = DateTime.Compare(DateTime.Now.AddMinutes(5), queue.Peek().Value); //want to be less for refresh
-            while (compareValue < 0) {
-                await PomodoroServer.Handlers.SpotifyHandler.RefreshUser(queue.Peek().Key);
+            int compareValue = DateTime.Compare(DateTime.Now.ToUniversalTime().AddMinutes(5), queue.Peek().Value.ToUniversalTime()); //want to be less for refresh
+            while (compareValue > 0) {
+                
+                HttpClient client = new HttpClient();
+                var url = $"http://10.136.248.196:5001/users/refresh/?id={queue.Peek().Key}";
+                await client.GetAsync(url);
+                //await SpotifyHandler.RefreshUser(queue.Peek().Key);
                 queue.Dequeue();
-                compareValue = DateTime.Compare(DateTime.Now.AddMinutes(5), queue.Peek().Value);
+                if (queue.Count < 1) {
+                    return;
+                }
+                compareValue = DateTime.Compare(DateTime.Now.ToUniversalTime().AddMinutes(5), queue.Peek().Value.ToUniversalTime());
             }
         }
         
