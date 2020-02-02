@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -51,7 +52,6 @@ namespace PomodoroServer.Handlers {
             var dictionary = Program.db.Collection("users").Document(id).GetSnapshotAsync().Result.ToDictionary();
             UserProfile temp = new UserProfile(dictionary);
             
-            
             var values = new Dictionary<string, string> {
                 {"grant_type", "refresh_token"},
                 {"refresh_token", temp.Refreshtoken}
@@ -73,7 +73,19 @@ namespace PomodoroServer.Handlers {
 
             var responseString = await response.Content.ReadAsStringAsync();
             JToken jsonResult = JToken.Parse(responseString);
-            
+
+            var newaccesstoken = (string) jsonResult["access_token"];
+            if ((string) jsonResult["refresh_token"] != null) {
+                temp.Refreshtoken = (string) jsonResult["refresh_token"];
+            }
+
+            var newDateTime = DateTime.Now.ToUniversalTime().AddHours(1);
+
+            temp.Accesstoken = newaccesstoken;
+            temp.Atexpiretime = newDateTime;
+
+            await Program.db.Collection("users").Document(id).SetAsync(temp.convertToDictionary());
+
             //ensure this works
 
 

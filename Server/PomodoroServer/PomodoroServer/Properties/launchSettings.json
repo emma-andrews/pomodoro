@@ -12,7 +12,7 @@
     "PomodoroServer": {
       "commandName": "Project",
       "launchUrl": "weatherforecast",
-      "applicationUrl": "https://localhost:5001;",
+      "applicationUrl": "http://10.136.248.196:5001;",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
