@@ -48,7 +48,7 @@ const ModalRegister = (props) => {
           params: { id: res.data.id },
         });
         if (userData && userData.data !== null) {
-          cookies.set('authCookie', `${email}:${password}`);
+          cookies.set('authCookie', `${email}:${password}`, { path: '/' });
           setCurrentUser(userData.data);
           setCurrentUserID(res.data.id);
         }

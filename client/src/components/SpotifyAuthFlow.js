@@ -22,6 +22,8 @@ const SpotifyAuthFlow = (props) => {
     params: { id: currentUserID },
   };
 
+  console.log('HERE');
+
   if (currentUserID && currentUserID !== null) {
     axios(requestArgs);
     return <Redirect to={paths.homePage} />;

@@ -21,7 +21,7 @@ const HomePage = (props) => {
       >
         Start
       </Button> */}
-      <Clock time={18} break={15}></Clock>
+      <Clock time={1500} break={300}></Clock>
     </>
   );
 };

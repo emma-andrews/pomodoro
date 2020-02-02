@@ -6,7 +6,7 @@ import 'normalize.css';
 
 import AuthState from './AuthState';
 import NavBar from './components/NavBar';
-import AccountPage from './pages/AccountPage';
+import SettingsPage from './pages/SettingsPage';
 import HomePage from './pages/HomePage';
 import WelcomePage from './pages/WelcomePage';
 import SpotifyAuthFlow from './components/SpotifyAuthFlow';
@@ -45,7 +45,7 @@ const App = (props) => {
           path={paths.spotifyAuthFlowPath}
           component={SpotifyAuthFlow}
         ></Route>
-        <Route path={paths.accountPage} component={AccountPage} />
+        <Route path={paths.settingsPage} component={SettingsPage} />
         <Route path={paths.homePage} component={HomePage} />
       </Switch>
     </>

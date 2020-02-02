@@ -46,7 +46,7 @@ const ModalLogin = (props) => {
         });
         console.log(userData);
         if (userData && userData.data !== null) {
-          cookies.set('authCookie', `${email}:${password}`);
+          cookies.set('authCookie', `${email}:${password}`, { path: '/' });
           setCurrentUser(userData.data);
           setCurrentUserID(authRes.data.id);
         }

@@ -1,6 +1,6 @@
 const welcomePage = '/';
 
-const accountPage = '/account';
+const settingsPage = '/settings';
 
 const homePage = '/home';
 
@@ -8,7 +8,7 @@ const spotifyAuthFlowPath = '/spotifyAuthFlow';
 
 const paths = {
   welcomePage,
-  accountPage,
+  settingsPage,
   homePage,
   spotifyAuthFlowPath,
 };

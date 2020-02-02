@@ -45,12 +45,12 @@ const NavBar = (props) => {
               <Nav.Link style={{ margin: '0 0', padding: '0 0' }}>
                 <NavLink
                   exact
-                  to={paths.accountPage}
+                  to={paths.settingsPage}
                   className='nav-link'
                   activeClassName='active'
                   style={{ fontSize: '115%' }}
                 >
-                  Account
+                  Settings
                 </NavLink>
               </Nav.Link>
 
@@ -61,9 +61,10 @@ const NavBar = (props) => {
                     to={paths.welcomePage}
                     className='nav-link'
                     onClick={() => {
-                      cookies.remove('authCookie');
+                      cookies.remove('authCookie', { path: '/' });
                       setGlobal({
                         currentUser: null,
+                        currentUserID: null,
                       });
                     }}
                     style={{ fontFamily: 'Roboto Mono', fontSize: '115%' }}
