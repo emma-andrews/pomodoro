@@ -1,5 +1,5 @@
 
-# Pomodoro App [PLACEHOLDER TITLE]
+# Pomodoro Timer
 
 ## Stay focused while studying!
 
