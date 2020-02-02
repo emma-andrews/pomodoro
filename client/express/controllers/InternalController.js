@@ -29,7 +29,7 @@ exports.spotifyAuth = (req, res) => {
   const state = generateRandomString(16);
   res.cookie(stateKey, state);
   // your application requests authorization
-  const scope = 'user-modify-playback-state';
+  const scope = 'user-modify-playback-state user-read-playback-state';
   res.redirect(
     'https://accounts.spotify.com/authorize?' +
       queryString.stringify({
@@ -51,7 +51,7 @@ exports.spotifyCallback = (req, res) => {
 
   if (state === null) {
     res.redirect(
-      '/#' +
+      '/?' +
         queryString.stringify({
           error: 'state_mismatch',
         })
@@ -94,7 +94,7 @@ exports.spotifyCallback = (req, res) => {
 
         // we can also pass the token to the browser to make requests from there
         res.redirect(
-          '/#' +
+          '/spotifyAuthFlow/?' +
             queryString.stringify({
               access_token: accessToken,
               refresh_token: refreshToken,
@@ -102,7 +102,7 @@ exports.spotifyCallback = (req, res) => {
         );
       } else {
         res.redirect(
-          '/#' +
+          '/?' +
             queryString.stringify({
               error: 'invalid_token',
             })
