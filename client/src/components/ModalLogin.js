@@ -1,11 +1,16 @@
-import React, { useState } from 'reactn';
+import React, { useState, useGlobal } from 'reactn';
 import { Button, Form, Modal } from 'react-bootstrap/';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
 
 const cookies = new Cookies();
 
 const ModalLogin = (props) => {
+  const [currentUser, setCurrentUser] = useGlobal('currentUser');
+  const [currentUserID, setCurrentUserID] = useGlobal('currentUserID');
+
   const [show, setShow] = useState(false);
 
   const closeModalLogin = () => setShow(false);
@@ -24,16 +29,30 @@ const ModalLogin = (props) => {
   const submitForm = async (event) => {
     event.preventDefault();
 
-    const postContent = {
+    const loginContent = {
       email: email,
       password: password,
     };
 
-    const postURL = '/external/login';
+    const loginURL = '/external/users/verify';
     try {
-      const res = await axios.post(postURL, postContent);
-      cookies.set('auth_cookie', `${email}:${password}`);
-      closeModelRegister();
+      const authRes = await axios.get(loginURL, {
+        params: loginContent,
+      });
+      if (authRes.data && authRes.data.id !== null) {
+        const getUserURL = '/external/users';
+        const userData = await axios.get(getUserURL, {
+          params: { id: authRes.data.id },
+        });
+        console.log(userData);
+        if (userData && userData.data !== null) {
+          cookies.set('authCookie', `${email}:${password}`);
+          setCurrentUser(userData.data);
+          setCurrentUserID(authRes.data.id);
+        }
+      }
+      closeModalLogin();
+      window.location.href = '/internal/spotify_auth';
     } catch (err) {
       console.log(err);
     }
@@ -41,7 +60,7 @@ const ModalLogin = (props) => {
 
   return (
     <>
-      <Button variant='info' onClick={showModalLogin}>
+      <Button variant='info' onClick={showModalLogin} style={props.style}>
         Login
       </Button>
       <Modal show={show} onHide={closeModalLogin} animation={false}>
@@ -80,5 +99,7 @@ const ModalLogin = (props) => {
     </>
   );
 };
+
+ModalLogin.propTypes = { style: PropTypes.object };
 
 export default ModalLogin;

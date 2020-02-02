@@ -8,8 +8,8 @@ import AuthState from './AuthState';
 import NavBar from './components/NavBar';
 import AccountPage from './pages/AccountPage';
 import HomePage from './pages/HomePage';
-import SettingsPage from './pages/SettingsPage';
 import WelcomePage from './pages/WelcomePage';
+import SpotifyAuthFlow from './components/SpotifyAuthFlow';
 
 import paths from './RouterPaths';
 
@@ -41,7 +41,10 @@ const App = (props) => {
       <NavBar />
       <Switch>
         <Route exact path={paths.welcomePage} component={WelcomePage} />
-        <Route path={paths.settingsPage} component={SettingsPage} />
+        <Route
+          path={paths.spotifyAuthFlowPath}
+          component={SpotifyAuthFlow}
+        ></Route>
         <Route path={paths.accountPage} component={AccountPage} />
         <Route path={paths.homePage} component={HomePage} />
       </Switch>

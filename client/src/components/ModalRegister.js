@@ -1,11 +1,15 @@
-import React, { useState } from 'reactn';
+import React, { useState, useGlobal } from 'reactn';
 import { Button, Form, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import PropTypes from 'prop-types';
 
 const cookies = new Cookies();
 
 const ModalRegister = (props) => {
+  const [currentUser, setCurrentUser] = useGlobal('currentUser');
+  const [currentUserID, setCurrentUserID] = useGlobal('currentUserID');
+
   const [show, setShow] = useState(false);
 
   const closeModalRegister = () => setShow(false);
@@ -36,11 +40,21 @@ const ModalRegister = (props) => {
 
     console.log(postContent);
 
-    const postURL = '/external/users';
+    const reqURL = '/external/users';
     try {
-      const res = await axios.post(postURL, postContent);
-      cookies.set('auth_cookie', `${email}:${password}`);
+      const res = await axios.post(reqURL, postContent);
+      if (res.data && res.data.id !== null) {
+        const userData = await axios.get(reqURL, {
+          params: { id: res.data.id },
+        });
+        if (userData && userData.data !== null) {
+          cookies.set('authCookie', `${email}:${password}`);
+          setCurrentUser(userData.data);
+          setCurrentUserID(res.data.id);
+        }
+      }
       closeModalRegister();
+      window.location.href = '/internal/spotify_auth';
     } catch (err) {
       console.log(err);
     }
@@ -48,7 +62,7 @@ const ModalRegister = (props) => {
 
   return (
     <>
-      <Button variant='info' onClick={showModalRegister}>
+      <Button variant='info' onClick={showModalRegister} style={props.style}>
         Register
       </Button>
       <Modal show={show} onHide={closeModalRegister} animation={false}>
@@ -96,5 +110,7 @@ const ModalRegister = (props) => {
     </>
   );
 };
+
+ModalRegister.propTypes = { style: PropTypes.object };
 
 export default ModalRegister;

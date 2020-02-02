@@ -12,10 +12,25 @@ const cookies = new Cookies();
 const AuthState = (props) => {
   // eslint-disable no-unused-vars
   const [currentUser, setCurrentUser] = useGlobal('currentUser');
+  const [currentUserID, setCurrentUserID] = useGlobal('currentUserID');
 
   // const [cookies] = useCookies();
 
-  const checkIfAuthenticated = () => {
+  // try {
+  //   const res = await axios.post(reqURL, postContent);
+  //   if (res.data && res.data.id !== null) {
+  //     cookies.set('authCookie', `${email}:${password}`);
+  //   }
+  //   const userData = await axios.get(reqURL, {
+  //     params: { id: res.data.id },
+  //   });
+  //   if (userData && userData.data !== null) setCurrentUser(userData.data);
+  //   closeModalRegister();
+  // } catch (err) {
+  //   console.log(err);
+  // }
+
+  const checkIfAuthenticated = async () => {
     // console.log(Cookie.load('hi'));
     const args = cookies.get('authCookie');
     if (args !== undefined) {
@@ -23,6 +38,26 @@ const AuthState = (props) => {
       if (argsList.length === 2) {
         console.log(argsList[0]);
         console.log(argsList[1]);
+        const loginURL = '/external/users/verify';
+        try {
+          const authRes = await axios.get(loginURL, {
+            params: { email: argsList[0], password: argsList[1] },
+          });
+          console.log(authRes);
+          if (authRes.data && authRes.data.id !== null) {
+            const getUserURL = '/external/users';
+            const userData = await axios.get(getUserURL, {
+              params: { id: authRes.data.id },
+            });
+            console.log(userData);
+            if (userData && userData.data !== null) {
+              setCurrentUser(userData.data);
+              setCurrentUserID(authRes.data.id);
+            }
+          }
+        } catch (err) {
+          console.log(err);
+        }
       }
     }
     // if (args.length == 2) {
@@ -42,6 +77,7 @@ const AuthState = (props) => {
   useEffect(() => {
     setGlobal({
       currentUser: null,
+      currentUserID: null,
     });
     checkIfAuthenticated();
   }, []);

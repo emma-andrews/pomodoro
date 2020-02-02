@@ -20,7 +20,13 @@ const NavBar = (props) => {
     >
       <Container>
         <Navbar bg='clear' expand='lg'>
-          <Navbar.Brand href='/'>Pomodoro</Navbar.Brand>
+          <Navbar.Brand
+            className='brandName'
+            style={{ fontFamily: 'Lobster', fontSize: '150%' }}
+            href='/'
+          >
+            Pomodoro Timer
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls='basic-navbar-nav' />
           <Navbar.Collapse id='basic-navbar-nav'>
             <Nav className='mr-auto'>
@@ -30,26 +36,19 @@ const NavBar = (props) => {
                   to={paths.homePage}
                   className='nav-link'
                   activeClassName='active'
+                  style={{ fontSize: '115%' }}
                 >
                   Home
                 </NavLink>
               </Nav.Link>
-              <Nav.Link style={{ margin: '0 0', padding: '0 0' }}>
-                <NavLink
-                  exact
-                  to={paths.settingsPage}
-                  className='nav-link'
-                  activeClassName='active'
-                >
-                  Settings
-                </NavLink>
-              </Nav.Link>
+
               <Nav.Link style={{ margin: '0 0', padding: '0 0' }}>
                 <NavLink
                   exact
                   to={paths.accountPage}
                   className='nav-link'
                   activeClassName='active'
+                  style={{ fontSize: '115%' }}
                 >
                   Account
                 </NavLink>
@@ -67,6 +66,7 @@ const NavBar = (props) => {
                         currentUser: null,
                       });
                     }}
+                    style={{ fontFamily: 'Roboto Mono', fontSize: '115%' }}
                   >
                     Logout
                   </NavLink>
