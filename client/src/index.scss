@@ -1,6 +1,7 @@
 // Font and colors from design document
 
 @import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+@import './custom.scss';
 
 $white-0: #ffffff;
 $mint-cool-30v: #1dc2ae;
@@ -15,6 +16,7 @@ body {
   font-size: 100%;
   -webkit-font-smoothing: subpixel-antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #efefef;
 }
 
 .white-0 {

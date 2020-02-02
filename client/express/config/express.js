@@ -1,9 +1,11 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const proxy = require('express-http-proxy');
 const bodyParser = require('body-parser');
 const internalRouter = require('../routes/InternalRouter');
-const externalRouter = require('../routes/ExternalRouter');
+
+const csServer = 'http://10.136.248.196:5001';
 
 const developmentMode = 'development';
 const devServerEnabled =
@@ -26,7 +28,7 @@ module.exports.start = () => {
 
   // Routes
   app.use('/internal', internalRouter);
-  app.use('/external', externalRouter);
+  app.use('/external', proxy(csServer));
 
   // Register all routes before registering webpack middleware
 

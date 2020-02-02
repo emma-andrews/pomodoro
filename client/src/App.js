@@ -1,8 +1,10 @@
-import React from 'react';
+import React from 'reactn';
 import { Route, Switch } from 'react-router-dom';
-import './custom.scss';
+import './index.scss';
+import 'normalize.css';
 // import axios from 'axios';
 
+import AuthState from './AuthState';
 import NavBar from './components/NavBar';
 import AccountPage from './pages/AccountPage';
 import HomePage from './pages/HomePage';
@@ -35,6 +37,7 @@ const App = (props) => {
 
   return (
     <>
+      <AuthState />
       <NavBar />
       <Switch>
         <Route exact path={paths.welcomePage} component={WelcomePage} />
