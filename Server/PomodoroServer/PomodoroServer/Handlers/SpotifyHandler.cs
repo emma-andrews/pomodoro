@@ -110,14 +110,27 @@ namespace PomodoroServer.Handlers {
         }
 
         public static async Task PauseMusic(string id) {
+            
+            
+            
             var dictionary = Program.db.Collection("users").Document(id).GetSnapshotAsync().Result.ToDictionary();
             UserProfile temp = new UserProfile(dictionary);
             
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + temp.Accesstoken);
-            var response = await client.PutAsync("https://api.spotify.com/v1/me/player/pause", null);
-            //null for body?
+
+            var response = await client.GetAsync("https://api.spotify.com/v1/me/player");
             var responseString = await response.Content.ReadAsStringAsync();
+            JToken jsonResult = JToken.Parse(responseString);
+
+            if (!(bool) jsonResult["is_playing"]) {
+                Console.WriteLine("ALREADY PAUSED\nALREADY PAUSED\nALREADY PAUSED\nALREADY PAUSED\nALREADY PAUSED\nALREADY PAUSED\n");
+                return;
+            }
+            
+            response = await client.PutAsync("https://api.spotify.com/v1/me/player/pause", null);
+            //null for body?
+            responseString = await response.Content.ReadAsStringAsync();
         }
         
         

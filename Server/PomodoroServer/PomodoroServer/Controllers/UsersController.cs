@@ -59,8 +59,8 @@ namespace PomodoroServer.Controllers {
 
                  user.Accesstoken = updatedUser.Accesstoken;
                  user.Refreshtoken = updatedUser.Refreshtoken;
-                 user.Atexpiretime = updatedUser.Atexpiretime;
-                 
+                 user.Atexpiretime = DateTime.UtcNow.AddHours(1);
+                 docRef.SetAsync(user.convertToDictionary());
                  return "ok";
         }
 
