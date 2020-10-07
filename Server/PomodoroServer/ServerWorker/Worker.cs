@@ -13,6 +13,7 @@ using PomodoroServer.Handlers;
 namespace ServerWorker {
     public class Worker : BackgroundService {
         private readonly ILogger<Worker> _logger;
+        private string servURL = "http://10.136.248.196:5001";
 
         public Worker(ILogger<Worker> logger) {
             _logger = logger;
@@ -36,7 +37,7 @@ namespace ServerWorker {
 
         private async Task RefreshUsers() {
             var queue = await GetUsers();
-            await RefreshOldies(queue);
+            await RefreshOldUsers(queue);
         }
         protected async Task<Queue<KeyValuePair<string, DateTime>>> GetUsers() {
 
@@ -59,13 +60,13 @@ namespace ServerWorker {
             return userQueue;
         }
 
-        protected async Task RefreshOldies(Queue<KeyValuePair<string, DateTime>> queue) {
+        protected async Task RefreshOldUsers(Queue<KeyValuePair<string, DateTime>> queue) {
 
             int compareValue = DateTime.Compare(DateTime.Now.ToUniversalTime().AddMinutes(5), queue.Peek().Value.ToUniversalTime()); //want to be less for refresh
             while (compareValue > 0) {
                 
                 HttpClient client = new HttpClient();
-                var url = $"http://10.136.248.196:5001/users/refresh/?id={queue.Peek().Key}";
+                var url = $"{servURL}/users/refresh/?id={queue.Peek().Key}";
                 await client.GetAsync(url);
                 //await SpotifyHandler.RefreshUser(queue.Peek().Key);
                 queue.Dequeue();
