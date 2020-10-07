@@ -62,9 +62,8 @@ namespace ServerWorker {
 
         protected async Task RefreshOldUsers(Queue<KeyValuePair<string, DateTime>> queue) {
 
-            int compareValue = DateTime.Compare(DateTime.Now.ToUniversalTime().AddMinutes(5), queue.Peek().Value.ToUniversalTime()); //want to be less for refresh
+            int compareValue = DateTime.Compare(DateTime.Now.ToUniversalTime().AddMinutes(2.5), queue.Peek().Value.ToUniversalTime()); //want to be less for refresh
             while (compareValue > 0) {
-                
                 HttpClient client = new HttpClient();
                 var url = $"{servURL}/users/refresh/?id={queue.Peek().Key}";
                 await client.GetAsync(url);
